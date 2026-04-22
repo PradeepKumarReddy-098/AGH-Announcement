@@ -44,7 +44,14 @@ const getAnnouncement = async (req, res) => {
 
 const createAnnouncement = async (req, res) => {
   try {
-    const announcement = await Announcement.create(req.body);
+    const announcementData = req.body;
+
+    // If this announcement is being published, unpublish all others
+    if (announcementData.isPublished === true) {
+      await Announcement.updateMany({}, { isPublished: false });
+    }
+
+    const announcement = await Announcement.create(announcementData);
 
     return res.status(201).json({
       success: true,
@@ -61,10 +68,21 @@ const createAnnouncement = async (req, res) => {
 
 const updateAnnouncement = async (req, res) => {
   try {
-    const announcement = await Announcement.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const updateData = req.body;
+
+    // If this announcement is being published, unpublish all others
+    if (updateData.isPublished === true) {
+      await Announcement.updateMany({}, { isPublished: false });
+    }
+
+    const announcement = await Announcement.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
 
     if (!announcement) {
       return res.status(404).json({

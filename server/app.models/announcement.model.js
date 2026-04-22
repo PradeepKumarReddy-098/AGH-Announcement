@@ -16,15 +16,15 @@ const announcementSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
-    active: {
+    isPublished: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   },
   {
     timestamps: true,
     versionKey: false,
-  }
+  },
 );
 
 module.exports = mongoose.model("Announcement", announcementSchema);
