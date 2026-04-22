@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import AnnouncementModal from '../components/AnnouncementModal'
+import { PageShell, HeroPanel, Eyebrow, HeroCopy, Actions, PrimaryButton, StatusCard, AnnouncementPreview } from '../styles/AppStyles'
 
 const API_URL =
   import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/announcements/published'
@@ -53,27 +54,26 @@ function UserAnnouncementPage() {
 
   return (
     <>
-      <main className="page-shell">
-        <section className="hero-panel">
-          <span className="eyebrow">Campus Updates</span>
+      <PageShell>
+        <HeroPanel>
+          <Eyebrow>Campus Updates</Eyebrow>
           <h1>Announcement Popup UI</h1>
-          <p className="hero-copy">
+          <HeroCopy>
             Published announcements are loaded from the server and shown once
             per visitor. You can reopen the current announcement any time.
-          </p>
+          </HeroCopy>
 
-          <div className="actions">
-            <button
+          <Actions>
+            <PrimaryButton
               type="button"
-              className="primary-button"
               onClick={handleReopenModal}
               disabled={!announcement}
             >
               View Announcement
-            </button>
-          </div>
+            </PrimaryButton>
+          </Actions>
 
-          <div className="status-card">
+          <StatusCard>
             <h2>Live Status</h2>
             {isLoading && <p>Loading published announcement...</p>}
             {!isLoading && error && <p>{error}</p>}
@@ -81,18 +81,18 @@ function UserAnnouncementPage() {
               <p>No published announcement is available right now.</p>
             )}
             {!isLoading && announcement && (
-              <div className="announcement-preview">
+              <AnnouncementPreview>
                 <strong>{announcement.title}</strong>
                 <p>{announcement.description}</p>
                 <span>
                   {announcement.option?.length || 0} option
                   {announcement.option?.length === 1 ? '' : 's'}
                 </span>
-              </div>
+              </AnnouncementPreview>
             )}
-          </div>
-        </section>
-      </main>
+          </StatusCard>
+        </HeroPanel>
+      </PageShell>
 
       {isModalOpen && announcement && (
         <AnnouncementModal announcement={announcement} onClose={handleCloseModal} />
