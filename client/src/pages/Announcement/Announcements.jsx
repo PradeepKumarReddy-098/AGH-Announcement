@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import {
   ActionButton,
   ActionsCell,
+  ConfirmActions,
+  ConfirmButton,
+  ConfirmDialog,
+  ConfirmOverlay,
   CreateButton,
   EmptyState,
   ErrorMessage,
@@ -20,14 +24,18 @@ import {
   ToastMessage,
 } from "./AnnouncementsStyle";
 
-const API_URL = "http://localhost:5000/api/announcements/admin";
-const ANNOUNCEMENT_API_URL = "http://localhost:5000/api/announcements";
+const ANNOUNCEMENT_API_URL =
+  import.meta.env.VITE_ANNOUNCEMENT_API_URL ||
+  "http://localhost:5000/api/announcements";
+const API_URL = `${ANNOUNCEMENT_API_URL}/admin`;
 
 const Announcements = () => {
   const [announcements, setAnnouncements] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [toast, setToast] = useState(null);
+  const [publishTarget, setPublishTarget] = useState(null);
+  const [isPublishing, setIsPublishing] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -54,7 +62,7 @@ const Announcements = () => {
       .then((data) => {
         if (!isMounted) return;
 
-        setAnnouncements(Array.isArray(data) ? data : data.data || []);
+        setAnnouncements(sortAnnouncements(Array.isArray(data) ? data : data.data || []));
       })
       .catch(() => {
         if (!isMounted) return;
@@ -117,7 +125,68 @@ const Announcements = () => {
     });
   };
 
+  const handlePublishAnnouncement = async () => {
+    if (!publishTarget) return;
+
+    setError("");
+    setToast(null);
+    setIsPublishing(true);
+
+    try {
+      const response = await fetch(
+        `${ANNOUNCEMENT_API_URL}/${getAnnouncementId(publishTarget)}/publish`,
+        {
+          method: "PATCH",
+        },
+      );
+
+      const result = await response.json().catch(() => null);
+
+      if (!response.ok || result?.success === false) {
+        throw new Error(
+          result?.message || result?.error || "Unable to publish announcement",
+        );
+      }
+
+      if (Array.isArray(result?.announcements)) {
+        setAnnouncements(result.announcements);
+      } else {
+        setAnnouncements((currentAnnouncements) =>
+          sortAnnouncements(
+            currentAnnouncements.map((announcement) => ({
+              ...announcement,
+              isPublish:
+                getAnnouncementId(announcement) === getAnnouncementId(publishTarget),
+              isPublished:
+                getAnnouncementId(announcement) === getAnnouncementId(publishTarget),
+            })),
+          ),
+        );
+      }
+
+      setToast({
+        type: "success",
+        message: result?.message || "Announcement published successfully.",
+      });
+      setPublishTarget(null);
+    } catch (publishError) {
+      const errorMessage =
+        publishError.message || "Announcement publish failed. Please try again.";
+
+      setError(errorMessage);
+      setToast({
+        type: "error",
+        message: errorMessage,
+      });
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
   const hasAnnouncements = announcements.length > 0;
+  const publishedAnnouncement = announcements.find(
+    (announcement) => announcement.isPublish,
+  );
 
   return (
     <PageShell>
@@ -128,6 +197,36 @@ const Announcements = () => {
           </ToastMessage>
         )}
       </ToastContainer>
+
+      {publishTarget && (
+        <ConfirmOverlay>
+          <ConfirmDialog role="dialog" aria-modal="true">
+            <h2>Publish this announcement?</h2>
+            <p>
+              {publishedAnnouncement
+                ? `You already have "${publishedAnnouncement.title}" published. Publishing "${publishTarget.title}" will unpublish it and make the current announcement live.`
+                : `Publishing "${publishTarget.title}" will make it visible to users.`}
+            </p>
+            <ConfirmActions>
+              <ConfirmButton
+                type="button"
+                onClick={() => setPublishTarget(null)}
+                disabled={isPublishing}
+              >
+                Cancel
+              </ConfirmButton>
+              <ConfirmButton
+                type="button"
+                $primary
+                onClick={handlePublishAnnouncement}
+                disabled={isPublishing}
+              >
+                {isPublishing ? "Publishing..." : "Publish"}
+              </ConfirmButton>
+            </ConfirmActions>
+          </ConfirmDialog>
+        </ConfirmOverlay>
+      )}
 
       <PageContent>
         {isLoading ? (
@@ -192,6 +291,15 @@ const Announcements = () => {
                               >
                                 Edit
                               </ActionButton>
+                              {!announcement.isPublish && (
+                                <ActionButton
+                                  $success
+                                  type="button"
+                                  onClick={() => setPublishTarget(announcement)}
+                                >
+                                  Publish
+                                </ActionButton>
+                              )}
                               <ActionButton
                                 $danger
                                 type="button"
@@ -218,5 +326,14 @@ const Announcements = () => {
 };
 
 const getAnnouncementId = (announcement) => announcement._id || announcement.id;
+
+const sortAnnouncements = (items) =>
+  [...items].sort((first, second) => {
+    if (first.isPublish !== second.isPublish) {
+      return first.isPublish ? -1 : 1;
+    }
+
+    return new Date(second.createdAt || 0) - new Date(first.createdAt || 0);
+  });
 
 export default Announcements;

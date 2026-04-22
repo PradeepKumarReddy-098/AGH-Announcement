@@ -59,6 +59,9 @@ export const ModalHeader = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: ${({ $expanded }) => ($expanded ? 'center' : 'flex-start')};
+  min-height: ${({ $expanded }) => ($expanded ? '250px' : 'auto')};
+  padding-bottom: ${({ $expanded }) => ($expanded ? '18px' : '0')};
   text-align: center;
 `
 
@@ -103,7 +106,7 @@ export const ModalTitle = styled.h2`
   font-size: 24px;
   font-weight: 600;
   line-height: 32px;
-  letter-spacing: -0.48px;
+  letter-spacing: 0;
   text-align: center;
   color: #131b2e;
 `
@@ -165,10 +168,11 @@ export const OptionBadge = styled.div`
 
 export const OptionTitle = styled.h3`
   margin: 0 0 4px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Work Sans', sans-serif;
   font-size: 16px;
   font-weight: 600;
   line-height: 24px;
+  letter-spacing: 0;
   color: #131b2e;
 `
 
@@ -205,6 +209,7 @@ export const DotButton = styled.button`
   border: 0;
   border-radius: 50%;
   cursor: pointer;
+  font-family: 'Poppins', sans-serif;
   background: #d6d9de;
   transition: transform 180ms ease, background-color 180ms ease;
 
@@ -229,6 +234,7 @@ export const ActionButton = styled.button`
   cursor: pointer;
   background: #2583c0;
   box-shadow: none;
+  font-family: 'Poppins', sans-serif;
 `
 
 export const ActionButtonText = styled.span`

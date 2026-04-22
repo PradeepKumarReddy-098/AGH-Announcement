@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import PreviewAnnouncement from "../../components/PreviewAnnouncement/PreviewAnnouncement.jsx";
+import AnnouncementCard from "../../components/AnnouncementCard.jsx";
 import {
   AddButton,
   BackButton,
@@ -33,7 +33,9 @@ import {
   ToggleRow,
 } from "./CreateAnnouncement.js";
 
-const API_URL = "http://localhost:5000/api/announcements";
+const API_URL =
+  import.meta.env.VITE_ANNOUNCEMENT_API_URL ||
+  "http://localhost:5000/api/announcements";
 
 const defaultValues = {
   title: "",
@@ -109,7 +111,7 @@ const CreateAnnouncement = ({ onBack, onCreated }) => {
       .then((result) => {
         if (!isMounted) return;
 
-        reset(getAnnouncementFormValues(result.data || result));
+        reset(getAnnouncementFormValues(result.data));
       })
       .catch((error) => {
         if (!isMounted) return;
@@ -204,7 +206,9 @@ const CreateAnnouncement = ({ onBack, onCreated }) => {
       }
     } catch (error) {
       const errorMessage =
-        error.message || "Announcement submission failed. Please try again.";
+        error.message === "Failed to fetch"
+          ? "Unable to reach the backend. Please make sure the server is running on port 5000."
+          : error.message || "Announcement submission failed. Please try again.";
 
       setSubmitError(errorMessage);
       setToast({
@@ -359,7 +363,7 @@ const CreateAnnouncement = ({ onBack, onCreated }) => {
         </FormBody>
       ) : (
         <PreviewFrame>
-          <PreviewAnnouncement announcement={watchedAnnouncement} />
+          <AnnouncementCard announcement={watchedAnnouncement} />
           <PreviewButton type="button" onClick={() => setActiveTab("form")}>
             Edit Form
           </PreviewButton>

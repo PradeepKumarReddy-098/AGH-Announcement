@@ -66,7 +66,10 @@ const normalizeAnnouncementPayload = (payload) => {
 
 const listAnnouncements = async (_req, res) => {
   try {
-    const announcements = await Announcement.find().sort({ createdAt: -1 });
+    const announcements = await Announcement.find().sort({
+      isPublish: -1,
+      createdAt: -1,
+    });
 
     return res.status(200).json({
       success: true,
@@ -77,6 +80,45 @@ const listAnnouncements = async (_req, res) => {
     return res.status(500).json({
       success: false,
       message: "Failed to fetch announcements",
+      error: error.message,
+    });
+  }
+};
+
+const publishAnnouncement = async (req, res) => {
+  try {
+    const announcement = await Announcement.findById(req.params.id);
+
+    if (!announcement) {
+      return res.status(404).json({
+        success: false,
+        message: "Announcement not found",
+      });
+    }
+
+    await Announcement.updateMany(
+      { _id: { $ne: announcement._id } },
+      { isPublish: false },
+    );
+
+    announcement.isPublish = true;
+    await announcement.save();
+
+    const announcements = await Announcement.find().sort({
+      isPublish: -1,
+      createdAt: -1,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Announcement published successfully",
+      data: serializeAnnouncement(announcement),
+      announcements: announcements.map(serializeAnnouncement),
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: "Failed to publish announcement",
       error: error.message,
     });
   }
@@ -217,6 +259,7 @@ module.exports = {
   listPublishedAnnouncements,
   getAnnouncement,
   createAnnouncement,
+  publishAnnouncement,
   updateAnnouncement,
   deleteAnnouncement,
 };

@@ -1,12 +1,15 @@
 import styled from "styled-components";
 
-export const PageShell = styled.section`
+export const PageShell = styled.div`
   background: #f5f7fb;
   min-height: 100vh;
   padding: 16px clamp(16px, 4vw, 40px) 48px;
+  h1,h2{
+    font-family: 'work sen', serif;
+  }
 `;
 
-export const PageContent = styled.div`
+export const PageContent = styled.section`
   max-width: 1400px;
   margin: 0 auto;
 `;
@@ -61,6 +64,7 @@ export const CreateButton = styled.button`
   transition:
     background 0.2s ease,
     transform 0.2s ease;
+  font-family: 'poppins';
 
   &:hover {
     background: #a90e27;
@@ -84,7 +88,7 @@ export const PageTitle = styled.h1`
   font-weight: 900;
   line-height: 1.15;
   margin: 0 0 12px;
-  font-size: "Work sen";
+  font-family: "Work sen", sans-serif;
 `;
 
 export const ErrorMessage = styled.div`
@@ -104,6 +108,7 @@ export const TableCard = styled.div`
   border-radius: 10px;
   overflow: hidden;
   margin: auto;
+  font-family: "Inter", sans-serif;
 `;
 
 export const TableScroll = styled.div`
@@ -243,7 +248,8 @@ export const MobileActions = styled.div`
 export const ActionButton = styled.button`
   background: transparent;
   border: 0;
-  color: ${({ $danger }) => ($danger ? "#c8102e" : "#2563eb")};
+  color: ${({ $danger, $success }) =>
+    $danger ? "#c8102e" : $success ? "#15803d" : "#2563eb"};
   font-size: 13px;
   font-weight: 700;
   padding: 4px;
@@ -256,6 +262,73 @@ export const ActionButton = styled.button`
     border-radius: 4px;
     outline: 2px solid currentColor;
     outline-offset: 2px;
+  }
+`;
+
+export const ConfirmOverlay = styled.div`
+  align-items: center;
+  background: rgba(15, 23, 42, 0.42);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 20px;
+  position: fixed;
+  z-index: 30;
+`;
+
+export const ConfirmDialog = styled.div`
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.22);
+  max-width: 460px;
+  padding: 24px;
+  width: 100%;
+  font-family: "Work Sans", sans-serif;
+
+  h2 {
+    color: #0f172a;
+    font-size: 22px;
+    line-height: 1.25;
+    margin: 0 0 10px;
+    font-family: "Work Sans";
+  }
+
+  p {
+    color: #475569;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+    font-family: "Inter";
+  }
+`;
+
+export const ConfirmActions = styled.div`
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+
+  @media (max-width: 480px) {
+    flex-direction: column-reverse;
+  }
+`;
+
+export const ConfirmButton = styled.button`
+  align-items: center;
+  background: ${({ $primary }) => ($primary ? "#c8102e" : "#ffffff")};
+  border: 1px solid ${({ $primary }) => ($primary ? "#c8102e" : "#cbd5e1")};
+  border-radius: 6px;
+  color: ${({ $primary }) => ($primary ? "#ffffff" : "#334155")};
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 800;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 18px;
+
+  &:disabled {
+    cursor: wait;
+    opacity: 0.7;
   }
 `;
 
@@ -274,10 +347,12 @@ export const EmptyState = styled.div`
   h2 {
     color: #0f172a;
     font-size: 24px;
+    font-family: 'Work Sans';
   }
 
   span {
     color: #64748b;
     margin-bottom: 12px;
+    font-family: 'Inter';
   }
 `;

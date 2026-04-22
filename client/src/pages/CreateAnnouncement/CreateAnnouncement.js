@@ -22,6 +22,7 @@ export const Tabs = styled.div`
   gap: 32px;
   margin: 0 auto 48px;
   max-width: 1000px;
+  font-family: 'Work Sans', sans-serif;
 `;
 
 export const ToastContainer = styled.div`
@@ -74,6 +75,7 @@ export const FormBody = styled.form`
   max-width: 1000px;
   padding: clamp(18px, 4vw, 32px);
   width: 100%;
+  font-family: 'Inter', sans-serif;
 `;
 
 export const FormCard = styled.div`
