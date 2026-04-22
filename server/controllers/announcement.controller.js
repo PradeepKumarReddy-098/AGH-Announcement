@@ -22,7 +22,8 @@ const serializeAnnouncement = (announcement) => ({
   id: announcement._id,
   title: announcement.title,
   description: announcement.description || announcement.message,
-  isPublished: announcement.isPublished,
+  isPublish: announcement.isPublished ?? announcement.isPublish ?? false,
+  isPublished: announcement.isPublished ?? announcement.isPublish ?? false,
   option: (announcement.option || announcement.options || []).map(serializeOption),
   createdAt: announcement.createdAt,
   updatedAt: announcement.updatedAt,
@@ -41,7 +42,7 @@ const normalizeAnnouncementPayload = (payload) => {
   }
 
   if (hasOwn(payload, "isPublished") || hasOwn(payload, "isPublish")) {
-    normalizedPayload.isPublished = Boolean(payload.isPublished ?? payload.isPublish);
+    normalizedPayload.isPublish = Boolean(payload.isPublished ?? payload.isPublish);
   }
 
   if (hasOwn(payload, "option") || hasOwn(payload, "options")) {
@@ -83,7 +84,7 @@ const listAnnouncements = async (_req, res) => {
 
 const listPublishedAnnouncements = async (_req, res) => {
   try {
-    const announcements = await Announcement.find({ isPublished: true }).sort({
+    const announcements = await Announcement.find({ isPublish: true }).sort({
       createdAt: -1,
     });
 
@@ -130,8 +131,8 @@ const createAnnouncement = async (req, res) => {
     const announcementData = normalizeAnnouncementPayload(req.body);
 
     // If this announcement is being published, unpublish all others
-    if (announcementData.isPublished === true) {
-      await Announcement.updateMany({}, { isPublished: false });
+    if (announcementData.isPublish === true) {
+      await Announcement.updateMany({}, { isPublish: false });
     }
 
     const announcement = await Announcement.create(announcementData);
@@ -154,8 +155,8 @@ const updateAnnouncement = async (req, res) => {
     const updateData = normalizeAnnouncementPayload(req.body);
 
     // If this announcement is being published, unpublish all others
-    if (updateData.isPublished === true) {
-      await Announcement.updateMany({}, { isPublished: false });
+    if (updateData.isPublish === true) {
+      await Announcement.updateMany({}, { isPublish: false });
     }
 
     const announcement = await Announcement.findByIdAndUpdate(

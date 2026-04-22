@@ -36,9 +36,10 @@ const announcementSchema = new mongoose.Schema(
       type: [optionSchema],
       default: [],
     },
-    isPublished: {
+    isPublish: {
       type: Boolean,
       default: false,
+      alias: "isPublished",
     },
   },
   {
