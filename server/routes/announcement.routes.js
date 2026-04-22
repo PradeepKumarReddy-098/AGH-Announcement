@@ -2,6 +2,7 @@ const express = require("express");
 
 const {
   listAnnouncements,
+  listPublishedAnnouncements,
   getAnnouncement,
   createAnnouncement,
   updateAnnouncement,
@@ -10,7 +11,9 @@ const {
 
 const router = express.Router();
 
-router.route("/").get(listAnnouncements).post(createAnnouncement);
+router.get("/admin", listAnnouncements);
+router.get("/published", listPublishedAnnouncements);
+router.route("/").post(createAnnouncement);
 router.route("/:id").get(getAnnouncement).put(updateAnnouncement).delete(deleteAnnouncement);
 
 module.exports = router;

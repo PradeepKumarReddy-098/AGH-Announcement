@@ -1,4 +1,67 @@
 const Announcement = require("../app.models/announcement.model");
+const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
+
+const serializeOption = (item, index) => {
+  if (typeof item === "string") {
+    return {
+      title: String.fromCharCode(65 + index),
+      description: item,
+    };
+  }
+
+  return {
+    title: item.title,
+    description: item.description,
+    id: item._id,
+    createdAt: item.createdAt,
+    updatedAt: item.updatedAt,
+  };
+};
+
+const serializeAnnouncement = (announcement) => ({
+  id: announcement._id,
+  title: announcement.title,
+  description: announcement.description || announcement.message,
+  isPublished: announcement.isPublished,
+  option: (announcement.option || announcement.options || []).map(serializeOption),
+  createdAt: announcement.createdAt,
+  updatedAt: announcement.updatedAt,
+});
+
+const normalizeAnnouncementPayload = (payload) => {
+  const rawOptions = payload.option || payload.options || [];
+  const normalizedPayload = {};
+
+  if (hasOwn(payload, "title")) {
+    normalizedPayload.title = payload.title;
+  }
+
+  if (hasOwn(payload, "description") || hasOwn(payload, "message")) {
+    normalizedPayload.description = payload.description || payload.message;
+  }
+
+  if (hasOwn(payload, "isPublished") || hasOwn(payload, "isPublish")) {
+    normalizedPayload.isPublished = Boolean(payload.isPublished ?? payload.isPublish);
+  }
+
+  if (hasOwn(payload, "option") || hasOwn(payload, "options")) {
+    normalizedPayload.option = rawOptions.map((item, index) => {
+      if (typeof item === "string") {
+        return {
+          title: String.fromCharCode(65 + index),
+          description: item,
+        };
+      }
+
+      return {
+        title: item.title,
+        description: item.description,
+      };
+    });
+  }
+
+  return normalizedPayload;
+};
 
 const listAnnouncements = async (_req, res) => {
   try {
@@ -7,7 +70,27 @@ const listAnnouncements = async (_req, res) => {
     return res.status(200).json({
       success: true,
       count: announcements.length,
-      data: announcements,
+      data: announcements.map(serializeAnnouncement),
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch announcements",
+      error: error.message,
+    });
+  }
+};
+
+const listPublishedAnnouncements = async (_req, res) => {
+  try {
+    const announcements = await Announcement.find({ isPublished: true }).sort({
+      createdAt: -1,
+    });
+
+    return res.status(200).json({
+      success: true,
+      count: announcements.length,
+      data: announcements.map(serializeAnnouncement),
     });
   } catch (error) {
     return res.status(500).json({
@@ -31,7 +114,7 @@ const getAnnouncement = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      data: announcement,
+      data: serializeAnnouncement(announcement),
     });
   } catch (error) {
     return res.status(400).json({
@@ -44,7 +127,7 @@ const getAnnouncement = async (req, res) => {
 
 const createAnnouncement = async (req, res) => {
   try {
-    const announcementData = req.body;
+    const announcementData = normalizeAnnouncementPayload(req.body);
 
     // If this announcement is being published, unpublish all others
     if (announcementData.isPublished === true) {
@@ -55,7 +138,7 @@ const createAnnouncement = async (req, res) => {
 
     return res.status(201).json({
       success: true,
-      data: announcement,
+      data: serializeAnnouncement(announcement),
     });
   } catch (error) {
     return res.status(400).json({
@@ -68,7 +151,7 @@ const createAnnouncement = async (req, res) => {
 
 const updateAnnouncement = async (req, res) => {
   try {
-    const updateData = req.body;
+    const updateData = normalizeAnnouncementPayload(req.body);
 
     // If this announcement is being published, unpublish all others
     if (updateData.isPublished === true) {
@@ -93,7 +176,7 @@ const updateAnnouncement = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      data: announcement,
+      data: serializeAnnouncement(announcement),
     });
   } catch (error) {
     return res.status(400).json({
@@ -130,6 +213,7 @@ const deleteAnnouncement = async (req, res) => {
 
 module.exports = {
   listAnnouncements,
+  listPublishedAnnouncements,
   getAnnouncement,
   createAnnouncement,
   updateAnnouncement,

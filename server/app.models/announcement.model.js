@@ -1,5 +1,25 @@
 const mongoose = require("mongoose");
 
+const optionSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: [true, "Option title is required"],
+      trim: true,
+    },
+    description: {
+      type: String,
+      required: [true, "Option description is required"],
+      trim: true,
+    },
+  },
+  {
+    _id: true,
+    timestamps: true,
+    versionKey: false,
+  },
+);
+
 const announcementSchema = new mongoose.Schema(
   {
     title: {
@@ -7,13 +27,13 @@ const announcementSchema = new mongoose.Schema(
       required: [true, "Title is required"],
       trim: true,
     },
-    message: {
+    description: {
       type: String,
-      required: [true, "Message is required"],
+      required: [true, "Description is required"],
       trim: true,
     },
-    options: {
-      type: [String],
+    option: {
+      type: [optionSchema],
       default: [],
     },
     isPublished: {
