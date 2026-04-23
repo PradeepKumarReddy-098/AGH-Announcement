@@ -13,7 +13,7 @@ export const ModalOverlay = styled.div`
 
   @media (max-width: 560px) {
     align-items: flex-start;
-    padding: 4px 20px 0px 20px;
+    padding: 40px 20px 0px 20px;
   }
 `;
 
@@ -51,7 +51,7 @@ export const ModalHeroImage = styled.img`
 
   @media (max-width: 380px) {
     width: calc(100% + 40px);
-    height: 168px;
+    height: 120px;
     margin: 0 -20px 24px;
   }
 `;
@@ -104,9 +104,16 @@ export const CarouselViewport = styled.div`
   position: relative;
   z-index: 1;
   overflow: hidden;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
   margin: 24px 0 18px;
   padding-top: 24px;
   border-top: 1px solid rgba(19, 27, 46, 0.08);
+
+  &:active {
+    cursor: grabbing;
+  }
 
   @media (max-width: 380px) {
     margin: 22px 0 16px;

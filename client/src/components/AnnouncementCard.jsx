@@ -34,7 +34,7 @@ function getOptionSlides(options) {
 
 function AnnouncementCard({ announcement, onClose, isModal = false }) {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [touchStartX, setTouchStartX] = useState(0);
+  const [dragStartX, setDragStartX] = useState(null);
   const optionSlides = getOptionSlides(announcement?.option || []);
   const hasOptions = optionSlides.length > 0;
   const visibleSlide = hasOptions ? currentSlide % optionSlides.length : 0;
@@ -51,28 +51,48 @@ function AnnouncementCard({ announcement, onClose, isModal = false }) {
     return () => window.clearInterval(timer);
   }, [optionSlides.length]);
 
-  const handleTouchStart = (event) => {
-    setTouchStartX(event.changedTouches[0].clientX);
+  const goToNextSlide = () => {
+    setCurrentSlide((previous) => (previous + 1) % optionSlides.length);
   };
 
-  const handleTouchEnd = (event) => {
-    const touchEndX = event.changedTouches[0].clientX;
-    const difference = touchStartX - touchEndX;
+  const goToPreviousSlide = () => {
+    setCurrentSlide(
+      (previous) => (previous - 1 + optionSlides.length) % optionSlides.length
+    );
+  };
+
+  const handlePointerDown = (event) => {
+    if (optionSlides.length <= 1) {
+      return;
+    }
+
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setDragStartX(event.clientX);
+  };
+
+  const handlePointerUp = (event) => {
+    if (dragStartX === null || optionSlides.length <= 1) {
+      return;
+    }
+
+    const difference = dragStartX - event.clientX;
+    setDragStartX(null);
 
     if (Math.abs(difference) < 40 || optionSlides.length <= 1) {
       return;
     }
 
     if (difference > 0) {
-      setCurrentSlide((previous) => (previous + 1) % optionSlides.length);
+      goToNextSlide();
     }
 
     if (difference < 0) {
-      setCurrentSlide(
-        (previous) =>
-          (previous - 1 + optionSlides.length) % optionSlides.length
-      );
+      goToPreviousSlide();
     }
+  };
+
+  const handlePointerCancel = () => {
+    setDragStartX(null);
   };
 
   return (
@@ -95,8 +115,10 @@ function AnnouncementCard({ announcement, onClose, isModal = false }) {
 
       {hasOptions && (
         <CarouselViewport
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerCancel}
+          onLostPointerCapture={handlePointerCancel}
         >
           <OptionsTrack
             style={{
