@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import announcementHero from "../assets/announcement-hero.png";
 import {
   ModalCard,
@@ -34,7 +34,8 @@ function getOptionSlides(options) {
 
 function AnnouncementCard({ announcement, onClose, isModal = false }) {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [dragStartX, setDragStartX] = useState(null);
+  const dragStartXRef = useRef(null);
+  const dragPointerIdRef = useRef(null);
   const optionSlides = getOptionSlides(announcement?.option || []);
   const hasOptions = optionSlides.length > 0;
   const visibleSlide = hasOptions ? currentSlide % optionSlides.length : 0;
@@ -61,24 +62,44 @@ function AnnouncementCard({ announcement, onClose, isModal = false }) {
     );
   };
 
+  const clearDrag = () => {
+    dragStartXRef.current = null;
+    dragPointerIdRef.current = null;
+  };
+
   const handlePointerDown = (event) => {
-    if (optionSlides.length <= 1) {
+    if (!event.isPrimary || optionSlides.length <= 1) {
       return;
     }
 
-    event.currentTarget.setPointerCapture(event.pointerId);
-    setDragStartX(event.clientX);
+    dragStartXRef.current = event.clientX;
+    dragPointerIdRef.current = event.pointerId;
+
+    if (event.currentTarget.setPointerCapture) {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    }
   };
 
   const handlePointerUp = (event) => {
-    if (dragStartX === null || optionSlides.length <= 1) {
+    if (
+      dragStartXRef.current === null ||
+      dragPointerIdRef.current !== event.pointerId ||
+      optionSlides.length <= 1
+    ) {
       return;
     }
 
-    const difference = dragStartX - event.clientX;
-    setDragStartX(null);
+    const difference = dragStartXRef.current - event.clientX;
+    clearDrag();
 
-    if (Math.abs(difference) < 40 || optionSlides.length <= 1) {
+    if (
+      event.currentTarget.hasPointerCapture?.(event.pointerId) &&
+      event.currentTarget.releasePointerCapture
+    ) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+
+    if (Math.abs(difference) < 35) {
       return;
     }
 
@@ -91,8 +112,10 @@ function AnnouncementCard({ announcement, onClose, isModal = false }) {
     }
   };
 
-  const handlePointerCancel = () => {
-    setDragStartX(null);
+  const handlePointerCancel = (event) => {
+    if (dragPointerIdRef.current === event.pointerId) {
+      clearDrag();
+    }
   };
 
   return (
@@ -118,7 +141,6 @@ function AnnouncementCard({ announcement, onClose, isModal = false }) {
           onPointerDown={handlePointerDown}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerCancel}
-          onLostPointerCapture={handlePointerCancel}
         >
           <OptionsTrack
             style={{
