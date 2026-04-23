@@ -24,9 +24,7 @@ import {
   ToastMessage,
 } from "./AnnouncementsStyle";
 
-const ANNOUNCEMENT_API_URL =
-  import.meta.env.VITE_ANNOUNCEMENT_API_URL ||
-  "http://localhost:5000/api/announcements";
+const ANNOUNCEMENT_API_URL = "https://backend-announcements.onrender.com/api/announcements";
 const API_URL = `${ANNOUNCEMENT_API_URL}/admin`;
 
 const Announcements = () => {

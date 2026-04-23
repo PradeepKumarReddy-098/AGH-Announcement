@@ -33,9 +33,7 @@ import {
   ToggleRow,
 } from "./CreateAnnouncement.js";
 
-const API_URL =
-  import.meta.env.VITE_ANNOUNCEMENT_API_URL ||
-  "http://localhost:5000/api/announcements";
+const API_URL = "https://backend-announcements.onrender.com/api/announcements";
 
 const defaultValues = {
   title: "",

@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react'
 import AnnouncementModal from '../components/AnnouncementModal'
 import { PageShell, HeroPanel, Eyebrow, HeroCopy, Actions, PrimaryButton, StatusCard, AnnouncementPreview } from '../styles/AppStyles'
 
-const API_URL =
-  import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/announcements/published'
+const API_URL = 'https://backend-announcements.onrender.com/api/announcements/published'
 
 function UserAnnouncementPage() {
   const [announcement, setAnnouncement] = useState(null)
