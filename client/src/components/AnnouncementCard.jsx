@@ -142,11 +142,11 @@ function AnnouncementCard({ announcement, onClose, isModal = false }) {
         </HeaderIcon>
         <ModalBadge>Announcement</ModalBadge>
         <ModalTitle id="announcement-title">
-          {announcement?.title || 'Scheduled Maintenance'}
+          {announcement?.title || 'You Announcement Title'}
         </ModalTitle>
         <ModalDescription>
           {announcement?.description ||
-            'The site will be undergoing scheduled maintenance today. We appreciate your patience.'}
+            'Your description will display here like this text.'}
         </ModalDescription>
       </ModalHeader>
 
