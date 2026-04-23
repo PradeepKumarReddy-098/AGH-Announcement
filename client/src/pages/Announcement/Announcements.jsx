@@ -86,6 +86,7 @@ const Announcements = () => {
     setToast(null);
 
     try {
+      setIsLoading(true)
       const response = await fetch(`${ANNOUNCEMENT_API_URL}/${announcementId}`, {
         method: "DELETE",
       });
@@ -116,6 +117,8 @@ const Announcements = () => {
         type: "error",
         message: errorMessage,
       });
+    }finally{
+      setIsLoading(false)
     }
   };
 

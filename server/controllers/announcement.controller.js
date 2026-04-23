@@ -23,7 +23,7 @@ const serializeAnnouncement = (announcement) => ({
   title: announcement.title,
   description: announcement.description || announcement.message,
   isPublish: announcement.isPublished ?? announcement.isPublish ?? false,
-  isPublished: announcement.isPublished ?? announcement.isPublish ?? false,
+  // isPublished: announcement.isPublished ?? announcement.isPublish ?? false,
   option: (announcement.option || announcement.options || []).map(serializeOption),
   createdAt: announcement.createdAt,
   updatedAt: announcement.updatedAt,
@@ -181,6 +181,7 @@ const createAnnouncement = async (req, res) => {
 
     return res.status(201).json({
       success: true,
+      message: "Announcement created successfully.",
       data: serializeAnnouncement(announcement),
     });
   } catch (error) {

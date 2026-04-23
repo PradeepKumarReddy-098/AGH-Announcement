@@ -41,13 +41,13 @@ const defaultValues = {
   title: "",
   description: "",
   isPublish: false,
-  option: [{ title: "", description: "" }],
+  option: [],
 };
 
 const getAnnouncementFormValues = (announcement) => ({
   title: announcement?.title || "",
   description: announcement?.description || "",
-  isPublish: Boolean(announcement?.isPublish ?? announcement?.isPublished),
+  isPublish: Boolean(announcement?.isPublish),
   option:
     announcement?.option?.length > 0
       ? announcement.option.map((item) => ({
@@ -57,7 +57,7 @@ const getAnnouncementFormValues = (announcement) => ({
       : defaultValues.option,
 });
 
-const CreateAnnouncement = ({ onBack, onCreated }) => {
+const CreateAnnouncement = () => {
   const [activeTab, setActiveTab] = useState("form");
   const [submitError, setSubmitError] = useState("");
   const [toast, setToast] = useState(null);
@@ -150,11 +150,6 @@ const CreateAnnouncement = ({ onBack, onCreated }) => {
   };
 
   const handleBack = () => {
-    if (onBack) {
-      onBack();
-      return;
-    }
-
     navigate("/announcements");
   };
 
@@ -192,17 +187,18 @@ const CreateAnnouncement = ({ onBack, onCreated }) => {
         );
       }
 
-      const savedAnnouncement = result?.data || result;
+      const savedAnnouncement = result;
       setToast({
         type: "success",
         message: isEditMode
           ? "Announcement updated successfully."
-          : "Announcement submitted successfully.",
+          : savedAnnouncement.message || "Announcement submitted successfully.",
       });
-      onCreated?.(savedAnnouncement);
 
       if (isEditMode) {
         navigate("/announcements");
+      }else{
+        reset(defaultValues)
       }
     } catch (error) {
       const errorMessage =
@@ -291,7 +287,7 @@ const CreateAnnouncement = ({ onBack, onCreated }) => {
                     </Label>
                     <Input
                       id={`option.${index}.title`}
-                      placeholder="System Maintenance"
+                      placeholder="Sub-announcement Title"
                       {...register(`option.${index}.title`, {
                         required: "Sub-announcement title is required",
                       })}
@@ -307,7 +303,7 @@ const CreateAnnouncement = ({ onBack, onCreated }) => {
                     </Label>
                     <Input
                       id={`option.${index}.description`}
-                      placeholder="Expected downtime of 2 hours on Sunday."
+                      placeholder="Short Description"
                       {...register(`option.${index}.description`, {
                         required: "Short description is required",
                       })}

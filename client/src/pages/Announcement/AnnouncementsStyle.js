@@ -342,6 +342,7 @@ export const EmptyState = styled.div`
   gap: 8px;
   min-height: 50vh;
   padding: 28px;
+  font-family: 'Work Sans' sans-serif;
   text-align: center;
 
   h2 {
