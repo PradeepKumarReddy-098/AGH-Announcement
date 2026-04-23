@@ -34,6 +34,7 @@ function getOptionSlides(options) {
 
 function AnnouncementCard({ announcement, onClose, isModal = false }) {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isCarouselPaused, setIsCarouselPaused] = useState(false);
   const dragStartXRef = useRef(null);
   const dragPointerIdRef = useRef(null);
   const optionSlides = getOptionSlides(announcement?.option || []);
@@ -41,7 +42,7 @@ function AnnouncementCard({ announcement, onClose, isModal = false }) {
   const visibleSlide = hasOptions ? currentSlide % optionSlides.length : 0;
 
   useEffect(() => {
-    if (optionSlides.length <= 1) {
+    if (optionSlides.length <= 1 || isCarouselPaused) {
       return undefined;
     }
 
@@ -50,7 +51,7 @@ function AnnouncementCard({ announcement, onClose, isModal = false }) {
     }, 3500);
 
     return () => window.clearInterval(timer);
-  }, [optionSlides.length]);
+  }, [isCarouselPaused, optionSlides.length]);
 
   const goToNextSlide = () => {
     setCurrentSlide((previous) => (previous + 1) % optionSlides.length);
@@ -67,6 +68,14 @@ function AnnouncementCard({ announcement, onClose, isModal = false }) {
     dragPointerIdRef.current = null;
   };
 
+  const pauseCarousel = () => {
+    setIsCarouselPaused(true);
+  };
+
+  const resumeCarousel = () => {
+    setIsCarouselPaused(false);
+  };
+
   const handlePointerDown = (event) => {
     if (!event.isPrimary || optionSlides.length <= 1) {
       return;
@@ -74,6 +83,7 @@ function AnnouncementCard({ announcement, onClose, isModal = false }) {
 
     dragStartXRef.current = event.clientX;
     dragPointerIdRef.current = event.pointerId;
+    pauseCarousel();
 
     if (event.currentTarget.setPointerCapture) {
       event.currentTarget.setPointerCapture(event.pointerId);
@@ -91,6 +101,7 @@ function AnnouncementCard({ announcement, onClose, isModal = false }) {
 
     const difference = dragStartXRef.current - event.clientX;
     clearDrag();
+    resumeCarousel();
 
     if (
       event.currentTarget.hasPointerCapture?.(event.pointerId) &&
@@ -115,6 +126,7 @@ function AnnouncementCard({ announcement, onClose, isModal = false }) {
   const handlePointerCancel = (event) => {
     if (dragPointerIdRef.current === event.pointerId) {
       clearDrag();
+      resumeCarousel();
     }
   };
 
@@ -138,6 +150,10 @@ function AnnouncementCard({ announcement, onClose, isModal = false }) {
 
       {hasOptions && (
         <CarouselViewport
+          onMouseEnter={pauseCarousel}
+          onMouseLeave={resumeCarousel}
+          onFocus={pauseCarousel}
+          onBlur={resumeCarousel}
           onPointerDown={handlePointerDown}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerCancel}
