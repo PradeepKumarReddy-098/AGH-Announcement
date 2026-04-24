@@ -1,10 +1,16 @@
 import styled from "styled-components";
 
 export const PageShell = styled.main`
-  min-height: 100vh;
+  min-height: 100dvh;
   display: grid;
   place-items: center;
   padding: 32px 20px;
+
+  @media (max-width: 640px) {
+    display: block;
+    min-height: auto;
+    padding: 14px 12px 24px;
+  }
 `;
 
 export const HeroPanel = styled.section`
@@ -30,9 +36,14 @@ export const HeroPanel = styled.section`
     margin: 0 0 16px;
     font-size: clamp(2.4rem, 6vw, 4.4rem);
     line-height: 0.98;
+    @media screen and (max-width: 480px) {
+      line-height: 1.1;
+      font-size: clamp(1.8rem, 8vw, 3.2rem);
+    }
   }
 
   @media (max-width: 640px) {
+    width: 100%;
     padding: 28px 20px;
     border-radius: 24px;
   }
