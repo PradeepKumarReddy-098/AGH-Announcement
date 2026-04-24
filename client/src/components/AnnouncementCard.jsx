@@ -1,8 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import announcementHero from "../assets/announcement-hero.png";
+import megaphoneImage from "../assets/megaphoneImage.svg";
+import starsFrameImage from "../assets/stars-frame.png";
 import {
   ModalCard,
-  ModalHeroImage,
+  ModalHeroContainer,
+  HeroStarsFrame,
+  MegaPhoneBackground,
+  HeroMegaphone,
+  HeroBadgeContainer,
+  HeroBadge,
   ModalHeader,
   ModalTitle,
   ModalDescription,
@@ -18,7 +24,7 @@ import {
   ActionButton,
   ActionButtonText,
   ActionIcon,
-} from "../styles/AnnouncementModalStyles";
+} from "./AnnouncementModalStyles";
 
 const ITEMS_PER_SLIDE = 2;
 
@@ -59,7 +65,7 @@ function AnnouncementCard({ announcement, onClose, isModal = false }) {
 
   const goToPreviousSlide = () => {
     setCurrentSlide(
-      (previous) => (previous - 1 + optionSlides.length) % optionSlides.length
+      (previous) => (previous - 1 + optionSlides.length) % optionSlides.length,
     );
   };
 
@@ -136,11 +142,25 @@ function AnnouncementCard({ announcement, onClose, isModal = false }) {
       aria-modal={isModal ? "true" : undefined}
       aria-labelledby="announcement-title"
     >
-      <ModalHeroImage src={announcementHero} alt="" aria-hidden="true" />
+      <ModalHeroContainer>
+        <HeroStarsFrame src={starsFrameImage} alt="stars" aria-hidden="true" />
+
+        <MegaPhoneBackground>
+          <HeroMegaphone
+            src={megaphoneImage}
+            alt="megaphone"
+            aria-hidden="true"
+          />
+        </MegaPhoneBackground>
+      </ModalHeroContainer>
+
+      <HeroBadgeContainer>
+        <HeroBadge>Announcement</HeroBadge>
+      </HeroBadgeContainer>
 
       <ModalHeader $expanded={!hasOptions}>
         <ModalTitle id="announcement-title">
-          {announcement?.title || "You Announcement Title"}
+          {announcement?.title || "Your Announcement Title"}
         </ModalTitle>
         <ModalDescription>
           {announcement?.description ||
@@ -210,11 +230,11 @@ function AnnouncementCard({ announcement, onClose, isModal = false }) {
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <circle cx="10" cy="10" r="8" stroke="white" strokeWidth="2.5" />
+          <circle cx="10" cy="10" r="8" stroke="white" strokeWidth="2" />
           <path
             d="M6.25 10.25L8.75 12.75L14 7.5"
             stroke="white"
-            strokeWidth="2.5"
+            strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
           />

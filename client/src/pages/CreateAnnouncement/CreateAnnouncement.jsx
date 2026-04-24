@@ -121,7 +121,7 @@ const CreateAnnouncement = () => {
           type: "error",
           message: errorMessage,
         });
-      })
+      });
 
     return () => {
       isMounted = false;
@@ -195,14 +195,15 @@ const CreateAnnouncement = () => {
 
       if (isEditMode) {
         navigate("/announcements");
-      }else{
-        reset(defaultValues)
+      } else {
+        reset(defaultValues);
       }
     } catch (error) {
       const errorMessage =
         error.message === "Failed to fetch"
           ? "Unable to reach the backend. Please make sure the server is running on port 5000."
-          : error.message || "Announcement submission failed. Please try again.";
+          : error.message ||
+            "Announcement submission failed. Please try again.";
 
       setSubmitError(errorMessage);
       setToast({
@@ -247,7 +248,13 @@ const CreateAnnouncement = () => {
               <Input
                 id="title"
                 placeholder="Enter announcement title..."
-                {...register("title", { required: "Title is required", maxLength:{value: 30, message: "Title cannot exceed 30 characters"} })}
+                {...register("title", {
+                  required: "Title is required",
+                  maxLength: {
+                    value: 25,
+                    message: "Title cannot exceed 25 characters",
+                  },
+                })}
               />
               {errors.title && <ErrorText>{errors.title.message}</ErrorText>}
             </Field>
@@ -260,7 +267,10 @@ const CreateAnnouncement = () => {
                 rows={6}
                 {...register("description", {
                   required: "Description is required",
-                  maxLength:{value: 80, message: "Description cannot exceed 80 characters"}
+                  maxLength: {
+                    value: 80,
+                    message: "Description cannot exceed 80 characters",
+                  },
                 })}
               />
               {errors.description && (
@@ -289,11 +299,17 @@ const CreateAnnouncement = () => {
                       placeholder="Sub-announcement Title"
                       {...register(`option.${index}.title`, {
                         required: "Sub-announcement title is required",
-                        maxLength:{value: 20,message:"Sub-announcement title cannot exceed 20 characters"}
+                        maxLength: {
+                          value: 20,
+                          message:
+                            "Sub-announcement title cannot exceed 20 characters",
+                        },
                       })}
                     />
                     {errors.option?.[index]?.title && (
-                      <ErrorText>{errors.option[index].title.message}</ErrorText>
+                      <ErrorText>
+                        {errors.option[index].title.message}
+                      </ErrorText>
                     )}
                   </Field>
 
@@ -306,7 +322,11 @@ const CreateAnnouncement = () => {
                       placeholder="Short Description"
                       {...register(`option.${index}.description`, {
                         required: "Short description is required",
-                        maxLength:{value: 50, message:"Sub-announcement description cannot exceed 50 characters"}
+                        maxLength: {
+                          value: 50,
+                          message:
+                            "Sub-announcement description cannot exceed 50 characters",
+                        },
                       })}
                     />
                     {errors.option?.[index]?.description && (
@@ -317,11 +337,9 @@ const CreateAnnouncement = () => {
                   </Field>
                 </FieldGrid>
 
-                
-                  <DeleteButton type="button" onClick={() => remove(index)}>
-                    x
-                  </DeleteButton>
-                
+                <DeleteButton type="button" onClick={() => remove(index)}>
+                  x
+                </DeleteButton>
               </SubAnnouncementCard>
             ))}
           </FormSection>
@@ -329,7 +347,9 @@ const CreateAnnouncement = () => {
           <ToggleRow>
             <div>
               <FormTitle>Publish Now</FormTitle>
-              <p>Make this announcement visible immediately after submitting.</p>
+              <p>
+                Make this announcement visible immediately after submitting.
+              </p>
             </div>
             <Switch>
               <SwitchInput type="checkbox" {...register("isPublish")} />
