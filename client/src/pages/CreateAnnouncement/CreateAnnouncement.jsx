@@ -247,7 +247,7 @@ const CreateAnnouncement = () => {
               <Input
                 id="title"
                 placeholder="Enter announcement title..."
-                {...register("title", { required: "Title is required" })}
+                {...register("title", { required: "Title is required", maxLength:{value: 30, message: "Title cannot exceed 30 characters"} })}
               />
               {errors.title && <ErrorText>{errors.title.message}</ErrorText>}
             </Field>
@@ -260,6 +260,7 @@ const CreateAnnouncement = () => {
                 rows={6}
                 {...register("description", {
                   required: "Description is required",
+                  maxLength:{value: 80, message: "Description cannot exceed 80 characters"}
                 })}
               />
               {errors.description && (
@@ -288,6 +289,7 @@ const CreateAnnouncement = () => {
                       placeholder="Sub-announcement Title"
                       {...register(`option.${index}.title`, {
                         required: "Sub-announcement title is required",
+                        maxLength:{value: 20,message:"Sub-announcement title cannot exceed 20 characters"}
                       })}
                     />
                     {errors.option?.[index]?.title && (
@@ -304,6 +306,7 @@ const CreateAnnouncement = () => {
                       placeholder="Short Description"
                       {...register(`option.${index}.description`, {
                         required: "Short description is required",
+                        maxLength:{value: 50, message:"Sub-announcement description cannot exceed 50 characters"}
                       })}
                     />
                     {errors.option?.[index]?.description && (
