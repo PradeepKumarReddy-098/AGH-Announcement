@@ -268,8 +268,8 @@ const CreateAnnouncement = () => {
                 {...register("description", {
                   required: "Description is required",
                   maxLength: {
-                    value: 80,
-                    message: "Description cannot exceed 80 characters",
+                    value: 100,
+                    message: "Description cannot exceed 100 characters",
                   },
                 })}
               />

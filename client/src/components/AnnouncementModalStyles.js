@@ -230,7 +230,7 @@ export const OptionList = styled.div`
   min-height: 152px;
 
   @media (max-width: 560px) {
-    min-height: 160px;
+    min-height: 120px;
   }
 `;
 
