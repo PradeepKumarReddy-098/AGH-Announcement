@@ -1,12 +1,12 @@
-import AnnouncementCard from './AnnouncementCard'
-import { ModalOverlay } from '../styles/AnnouncementModalStyles'
+import AnnouncementCard from "./AnnouncementCard";
+import { ModalOverlay } from "./AnnouncementModalStyles";
 
 function AnnouncementModal({ announcement, onClose }) {
   return (
     <ModalOverlay>
       <AnnouncementCard announcement={announcement} onClose={onClose} isModal />
     </ModalOverlay>
-  )
+  );
 }
 
-export default AnnouncementModal
+export default AnnouncementModal;
