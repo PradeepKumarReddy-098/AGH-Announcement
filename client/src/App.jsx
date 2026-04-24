@@ -8,12 +8,12 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/user" element={<UserAnnouncementPage />} />
+      {/* <Route path="/" element={<HomePage />} /> */}
+        <Route path="/" element={<UserAnnouncementPage />} />
         <Route path="/announcements" element={<Announcements />} />
         <Route path='/create-announcement' element={<CreateAnnouncement />}/>
         <Route path='/edit-announcement/:announcementId' element={<CreateAnnouncement />}/>
-        <Route path="*" element={<HomePage />} />
+        <Route path="*" element={<UserAnnouncementPage />} />
       </Routes>
     </BrowserRouter>
   )
