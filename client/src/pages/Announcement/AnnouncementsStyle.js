@@ -4,8 +4,9 @@ export const PageShell = styled.div`
   background: #f5f7fb;
   min-height: 100vh;
   padding: 16px clamp(16px, 4vw, 40px) 48px;
-  h1,h2{
-    font-family: 'work sen', serif;
+  h1,
+  h2 {
+    font-family: "work sen", serif;
   }
 `;
 
@@ -64,7 +65,7 @@ export const CreateButton = styled.button`
   transition:
     background 0.2s ease,
     transform 0.2s ease;
-  font-family: 'poppins';
+  font-family: "poppins";
 
   &:hover {
     background: #a90e27;
@@ -342,18 +343,18 @@ export const EmptyState = styled.div`
   gap: 8px;
   min-height: 50vh;
   padding: 28px;
-  font-family: 'Work Sans' sans-serif;
+  font-family: "Work Sans", sans-serif;
   text-align: center;
 
   h2 {
     color: #0f172a;
     font-size: 24px;
-    font-family: 'Work Sans';
+    font-family: "Work Sans", sans-serif;
   }
 
   span {
     color: #64748b;
     margin-bottom: 12px;
-    font-family: 'Inter';
+    font-family: "Inter";
   }
 `;

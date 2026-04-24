@@ -12,8 +12,8 @@ export const ModalOverlay = styled.div`
   backdrop-filter: blur(3px);
 
   @media (max-width: 560px) {
-    align-items: flex-start;
-    padding: 40px 16px 0;
+    align-items: center;
+    padding: 16px;
   }
 `;
 
@@ -207,7 +207,7 @@ export const CarouselViewport = styled.div`
   cursor: grab;
   touch-action: pan-y;
   user-select: none;
-  margin: 24px 0 16px;
+  margin: 24px 0 0px;
   padding-top: 24px;
   border-top: 1px solid rgba(19, 27, 46, 0.08);
 
