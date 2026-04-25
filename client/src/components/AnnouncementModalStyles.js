@@ -175,7 +175,7 @@ export const ModalTitle = styled.h2`
   overflow-wrap: anywhere;
 
   @media (max-width: 560px) {
-    font-size: 24px;
+    font-size: 20px;
     line-height: 32px;
   }
 
@@ -195,7 +195,7 @@ export const ModalDescription = styled.p`
   color: #434653;
 
   @media (max-width: 560px) {
-    font-size: 16px;
+    font-size: 14px;
     line-height: 24px;
   }
 `;
@@ -296,7 +296,7 @@ export const OptionCopy = styled.p`
   color: #434653;
 
   @media (max-width: 560px) {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 20px;
   }
 `;
