@@ -114,6 +114,9 @@ export const AnnouncementPreview = styled.div`
 
   p {
     margin: 0 0 10px;
+    white-space: pre-line;
+  overflow-wrap: anywhere;
+  word-break: break-word;
   }
 
   span {
