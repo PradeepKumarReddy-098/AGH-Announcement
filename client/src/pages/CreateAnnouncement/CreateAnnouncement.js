@@ -213,6 +213,15 @@ export const ErrorText = styled.span`
   margin-top: 6px;
 `;
 
+export const CharacterCount = styled.span`
+  color: #64748b;
+  display: block;
+  font-size: 12px;
+  font-weight: 800;
+  justify-self: end;
+  margin-top: 2px;
+`;
+
 export const DeleteButton = styled.button`
   background: transparent;
   border: 0;

@@ -5,6 +5,7 @@ import AnnouncementCard from "../../components/AnnouncementCard.jsx";
 import {
   AddButton,
   BackButton,
+  CharacterCount,
   DeleteButton,
   ErrorText,
   Field,
@@ -41,6 +42,15 @@ const defaultValues = {
   isPublish: false,
   option: [],
 };
+
+const CHARACTER_LIMITS = {
+  title: 25,
+  description: 100,
+  subAnnouncementTitle: 20,
+  subAnnouncementDescription: 50,
+};
+
+const getCharacterCount = (value) => value?.length || 0;
 
 const getAnnouncementFormValues = (announcement) => ({
   title: announcement?.title || "",
@@ -248,15 +258,20 @@ const CreateAnnouncement = () => {
               <Input
                 id="title"
                 placeholder="Enter announcement title..."
+                maxLength={CHARACTER_LIMITS.title}
                 {...register("title", {
                   required: "Title is required",
                   maxLength: {
-                    value: 25,
+                    value: CHARACTER_LIMITS.title,
                     message: "Title cannot exceed 25 characters",
                   },
                 })}
               />
               {errors.title && <ErrorText>{errors.title.message}</ErrorText>}
+              <CharacterCount>
+                {getCharacterCount(watchedAnnouncement.title)}/
+                {CHARACTER_LIMITS.title}
+              </CharacterCount>
             </Field>
 
             <Field>
@@ -265,10 +280,11 @@ const CreateAnnouncement = () => {
                 id="description"
                 placeholder="Provide context or instructions..."
                 rows={6}
+                maxLength={CHARACTER_LIMITS.description}
                 {...register("description", {
                   required: "Description is required",
                   maxLength: {
-                    value: 100,
+                    value: CHARACTER_LIMITS.description,
                     message: "Description cannot exceed 100 characters",
                   },
                 })}
@@ -276,6 +292,10 @@ const CreateAnnouncement = () => {
               {errors.description && (
                 <ErrorText>{errors.description.message}</ErrorText>
               )}
+              <CharacterCount>
+                {getCharacterCount(watchedAnnouncement.description)}/
+                {CHARACTER_LIMITS.description}
+              </CharacterCount>
             </Field>
           </FormCard>
 
@@ -297,10 +317,11 @@ const CreateAnnouncement = () => {
                     <Input
                       id={`option.${index}.title`}
                       placeholder="Sub-announcement Title"
+                      maxLength={CHARACTER_LIMITS.subAnnouncementTitle}
                       {...register(`option.${index}.title`, {
                         required: "Sub-announcement title is required",
                         maxLength: {
-                          value: 20,
+                          value: CHARACTER_LIMITS.subAnnouncementTitle,
                           message:
                             "Sub-announcement title cannot exceed 20 characters",
                         },
@@ -311,6 +332,10 @@ const CreateAnnouncement = () => {
                         {errors.option[index].title.message}
                       </ErrorText>
                     )}
+                    <CharacterCount>
+                      {getCharacterCount(watchedAnnouncement.option?.[index]?.title)}
+                      /{CHARACTER_LIMITS.subAnnouncementTitle}
+                    </CharacterCount>
                   </Field>
 
                   <Field>
@@ -320,10 +345,11 @@ const CreateAnnouncement = () => {
                     <Input
                       id={`option.${index}.description`}
                       placeholder="Short Description"
+                      maxLength={CHARACTER_LIMITS.subAnnouncementDescription}
                       {...register(`option.${index}.description`, {
                         required: "Short description is required",
                         maxLength: {
-                          value: 50,
+                          value: CHARACTER_LIMITS.subAnnouncementDescription,
                           message:
                             "Sub-announcement description cannot exceed 50 characters",
                         },
@@ -334,6 +360,12 @@ const CreateAnnouncement = () => {
                         {errors.option[index].description.message}
                       </ErrorText>
                     )}
+                    <CharacterCount>
+                      {getCharacterCount(
+                        watchedAnnouncement.option?.[index]?.description,
+                      )}
+                      /{CHARACTER_LIMITS.subAnnouncementDescription}
+                    </CharacterCount>
                   </Field>
                 </FieldGrid>
 
